@@ -60,9 +60,8 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	as the value to be stored under the key hello_world in the ledger
 	if we send wrong number of arguments error will be returned else nothing, exits cleanly
 	*/
-	err:=stub.putState("hello_world",[]byte(args[0]))
-	if(err!=nil)
-	{
+	err:=stub.PutState("hello_world",[]byte(args[0]))
+	if(err!=nil){
 		return nil,err
 	}
 	return nil, nil
@@ -80,12 +79,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
-	}
-	else if function=="write"{
+	}else if function=="write" {
 		return t.write(stub,args)
 	}
+	
 	fmt.Println("invoke did not find func: " + function)					//error
 	return nil, errors.New("Received unknown function invocation: " + function)
+	
 }
 /*
 notice that both Init and write functions are very similar, i.e. they heck for a certain number of arguments 
@@ -93,12 +93,12 @@ and write a key/value pair to the ledger.
 but in write function the putSate allows me to pass in both the key and the value for the call to putstate
 so it allows us to insert whatever key value pair we want into the blockchain
 */
-func (t* SimpleChaincode) write(stub.ChaincodeStubInterface,args []string,)([]byte,error){
+func (t* SimpleChaincode) write(stub shim.ChaincodeStubInterface,args []string)([]byte,error){
 	var key,value string
 	var err error
 	fmt.Println("ruuning write()")
 	if(len(args)!=2){
-		return nil,erros.New("Incorrect number of arguments.expecting name of the key and value to set")
+		return nil,errors.New("Incorrect number of arguments.expecting name of the key and value to set")
 	}
 	//renaming for fun
 	key=args[0]
@@ -134,17 +134,20 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 //getState is complementary to putState.So just like how putState inserts a key value pair, getState 
 //lets us read a value for a previously written key
 //so this function returns back as an array of bytes to Query() which send it back to the REST handler
-func (t *SimpleChaincode) read(stub.ChaincodeStubInterface,args[] string)(byte[],error){
+func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key,jsonResp string
 	var err error
 	if len(args)!=1{
-		return nil,error.New("Incorrect number of arguments.expecting the name of the key to query")
+		return nil,errors.New("Incorrect number of arguments.expecting the name of the key to query")
 	}
 	key=args[0]
 	valasbytes,err:=stub.GetState(key)
 	if err!=nil{
 		jsonResp="{\"Error\":\"Failed to get state for"+key+"\"}"
-		return nil,erros.New(jsonResp)
+		return nil,errors.New(jsonResp)
 	}
-	return valAsbytes,nil
+	return valasbytes,nil
 }
+/*
+the fastest way to test chaincode is to use REST interface onn Blumix or Postman
+*/
