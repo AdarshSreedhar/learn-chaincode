@@ -50,8 +50,8 @@ func main() {
 */
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	if len(args) != 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 1")
+	if len(args) != 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 	/*
 	here we change the Init function so that it stores the first element in the args argument
@@ -60,7 +60,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	as the value to be stored under the key hello_world in the ledger
 	if we send wrong number of arguments error will be returned else nothing, exits cleanly
 	*/
-	err:=stub.PutState("hello_world",[]byte(args[0]))
+	//err:=stub.PutState("hello_world",[]byte(args[0]))
+	var key,value string
+	var err error
+	key=args[0]
+	value=args[1]
+	err=stub.PutState(key,[]byte(value))
 	if(err!=nil){
 		return nil,err
 	}
@@ -88,7 +93,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	
 }
 /*
-notice that both Init and write functions are very similar, i.e. they heck for a certain number of arguments 
+notice that both Init and write functions are very similar, i.e. they check for a certain number of arguments 
 and write a key/value pair to the ledger.
 but in write function the putSate allows me to pass in both the key and the value for the call to putstate
 so it allows us to insert whatever key value pair we want into the blockchain
@@ -96,7 +101,7 @@ so it allows us to insert whatever key value pair we want into the blockchain
 func (t* SimpleChaincode) write(stub shim.ChaincodeStubInterface,args []string)([]byte,error){
 	var key,value string
 	var err error
-	fmt.Println("ruuning write()")
+	fmt.Println("running write()")
 	if(len(args)!=2){
 		return nil,errors.New("Incorrect number of arguments.expecting name of the key and value to set")
 	}
