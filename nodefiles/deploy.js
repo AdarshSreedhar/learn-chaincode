@@ -8,19 +8,19 @@ var options1 =
 	url:"https://6a2ca48808dc43a195d8c18dfb063edb-vp0.us.blockchain.ibm.com:5003/chaincode",
 	json:{
   "jsonrpc": "2.0",
-  "method": "query",
+  "method": "deploy",
   "params": {
     "type": 1,
     "chaincodeID": {
-      "name": "27d8aeb7e5d3e357e62bf06040e9d65d2c7dd89a1fca7247b985936bf8d0e4a2ab0436bec186dd659c73930678c5ec3cbeb567dafa2f33bcafcfab08c307bd44"
+      "path": "https://github.com/AdarshSreedhar/learn-chaincode/adding2numbers"
     },
     "ctorMsg": {
-      "function": "getsum",
+      "function": "init",
       "args": [
-        "0"
+        "4","77"
       ]
     },
-    "secureContext": "user_type2_2"
+    "secureContext": "admin"
   },
   "id": 0
 },
